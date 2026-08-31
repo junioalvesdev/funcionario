@@ -113,6 +113,12 @@ public class FuncionarioService {
     }
 
 
+    public double FuncionarioService (List<Funcionario> funcionarios){
+        return funcionarios.stream().mapToDouble(funcionario -> funcionario.getSalario())
+                .average()
+                .orElseThrow(() -> new EntidadeNaoEncontradaException("Funcionario", 0l));
+    }
+
     public Page<Funcionario> listarPaginado(Pageable pageable) {
 
         return this.repository.findAll(pageable);
