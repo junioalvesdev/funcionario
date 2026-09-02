@@ -48,7 +48,9 @@ public class FuncionarioService {
         funcionario.setDepartamento(departamento);
         Funcionario salvo = this.repository.save(funcionario);
 
+
         System.out.println("[LOG] Funcionario salvo com sucesso: " + salvo);
+
 
         return salvo;
     }
