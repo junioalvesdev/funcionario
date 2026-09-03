@@ -36,4 +36,18 @@ public class DepartamentoController {
 
     // 🔧 espaço pra você expor os métodos novos que criar no Service (drills do Bloco A/B)
 
+    // Exercício 41 -- rota temporária só pra ver o problema N+1 no console
+    @GetMapping("/departamento/demo-n1")
+    public String demonstrarN1() {
+        this.service.demonstrarProblemaN1();
+        return "Confere o console da aplicação!";
+    }
+
+    // Exercício 43 -- rota temporária pra comparar com JOIN FETCH
+    @GetMapping("/departamento/demo-join-fetch")
+    public String demonstrarJoinFetch() {
+        this.service.demonstrarJoinFetch();
+        return "Confere o console da aplicação!";
+    }
+
 }

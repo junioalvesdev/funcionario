@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: senha123
+      POSTGRES_DB: funcionario
+    ports:
+      - "5433:5432"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      TZ: America/Sao_Paulo
+    ports:
+      - "8080:8080"

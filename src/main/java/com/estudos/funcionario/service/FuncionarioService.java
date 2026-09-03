@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 
@@ -124,5 +125,30 @@ public class FuncionarioService {
     public Page<Funcionario> listarPaginado(Pageable pageable) {
 
         return this.repository.findAll(pageable);
+    }
+
+    // Exercício 44 -- cenário SEM @Transactional (o "problema"): o primeiro save fica salvo mesmo com o erro depois
+    public void salvarDoisComErroSemTransacao(Long departamentoId) {
+        Departamento departamento = this.departamentoService.buscarPorId(departamentoId);
+
+        Funcionario f1 = new Funcionario("Pedro", 5000, new Date());
+        f1.setDepartamento(departamento);
+        this.repository.save(f1);
+        System.out.println("Primeiro funcionario salvo: " + f1.getNome());
+
+        throw new RuntimeException("Erro forcado pra testar rollback (sem @Transactional)");
+    }
+
+    // Exercício 44 -- cenário COM @Transactional (a "solução"): tudo é desfeito se der erro
+    @Transactional
+    public void salvarDoisComErroComTransacao(Long departamentoId) {
+        Departamento departamento = this.departamentoService.buscarPorId(departamentoId);
+
+        Funcionario f1 = new Funcionario("Joana", 5000, new Date());
+        f1.setDepartamento(departamento);
+        this.repository.save(f1);
+        System.out.println("Primeiro funcionario salvo (dentro da transacao): " + f1.getNome());
+
+        throw new RuntimeException("Erro forcado pra testar rollback (COM @Transactional)");
     }
 }

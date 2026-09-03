@@ -54,4 +54,18 @@ public class FuncionarioController {
 
     // 🔧 espaço pra você expor os métodos novos que criar no Service (drills do Bloco A/B)
 
+    // Exercício 44 -- testar SEM @Transactional
+    @GetMapping("/funcionario/teste-transacao-sem")
+    public String testeSemTransacao(@RequestParam Long departamentoId) {
+        this.service.salvarDoisComErroSemTransacao(departamentoId);
+        return "Nao deveria chegar aqui!";
+    }
+
+    // Exercício 44 -- testar COM @Transactional
+    @GetMapping("/funcionario/teste-transacao-com")
+    public String testeComTransacao(@RequestParam Long departamentoId) {
+        this.service.salvarDoisComErroComTransacao(departamentoId);
+        return "Nao deveria chegar aqui!";
+    }
+
 }

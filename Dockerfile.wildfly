@@ -1,0 +1,30 @@
+# Dockerfile.wildfly -- exemplo de referencia pra dockerizar um projeto EJB/WildFly (.war)
+# Diferenca principal em relacao ao Dockerfile do Spring Boot: o estagio 2 usa uma
+# imagem que JA TRAZ o WildFly instalado, e o artefato copiado e um .war (nao .jar),
+# indo direto pra pasta de deployments do servidor.
+
+# ===== ESTAGIO 1: build (compila o projeto e gera o .war) =====
+FROM maven:3.9-eclipse-temurin-17 AS build
+
+WORKDIR /app
+
+# copia só o pom.xml primeiro -- reaproveita cache das dependencias
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# copia o codigo-fonte e builda de verdade
+COPY src ./src
+RUN mvn clean package -DskipTests
+# resultado esperado: target/<nome-do-projeto>.war
+
+# ===== ESTAGIO 2: runtime (imagem oficial do WildFly, ja pronta pra rodar EJB/JAX-RS) =====
+FROM quay.io/wildfly/wildfly:latest
+
+# copia o .war gerado no estagio 1 DIRETO pra pasta de deployments do WildFly --
+# o proprio WildFly, ao iniciar, detecta e implanta tudo que estiver nessa pasta
+COPY --from=build /app/target/*.war /opt/jboss/wildfly/standalone/deployments/
+
+EXPOSE 8080
+
+# não precisa de ENTRYPOINT customizado -- a imagem do WildFly ja sabe
+# como iniciar o servidor sozinha (standalone.sh por baixo dos panos)
