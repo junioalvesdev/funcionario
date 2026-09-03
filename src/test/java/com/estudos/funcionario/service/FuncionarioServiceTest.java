@@ -29,6 +29,6 @@ class FuncionarioServiceTest {
 
         double resultado = service.mediaSalarial(List.of(f1, f2));
 
-        assertEquals(6000, resultado);
+        assertEquals(9999, resultado);
     }
 }
